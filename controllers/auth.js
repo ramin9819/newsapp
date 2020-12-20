@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs')
+const jwt=require('jsonwebtoken')
 
 const Author = require('../models/author')
 const Admin = require('../models/admin')
@@ -42,7 +43,8 @@ exports.postSignup = (req, res, next) => {
                 }
                 user.save()
                 res.status(201).json({
-                    message: "user created"
+                    message: "user created",
+                    user:user
                 })
             }
             )
@@ -67,7 +69,7 @@ exports.postLogin = (req, res, next) => {
                 error.statusCode = 404
                 throw error
             }
-            loggedUser = user
+            loggedUser = user 
             return bcrypt.compare(password, user.password)
         }).then(result => {
             if (!result) {
@@ -75,8 +77,14 @@ exports.postLogin = (req, res, next) => {
                 error.statusCode = 404
                 throw error
             }
+            const token=jwt.sign({
+                email: loggedUser.email,
+                userId:loggedUser._id.toString(),
+                userType:"user"
+            },'privatekey',{expiresIn: '100d'})
             res.status(200).json({
                 message: 'login accepted',
+                token:token,
                 user: {
                     name: loggedUser.name,
                     email: loggedUser.email,
@@ -107,9 +115,15 @@ exports.postLogin = (req, res, next) => {
                 throw error
             }
             Post.find({ creator: loggedUser._id }).then(autherPosts => {
-                console.log("postss:", autherPosts)
+                // console.log("postss:", autherPosts)
+                const token=jwt.sign({
+                    email: loggedUser.email,
+                    userId:loggedUser._id.toString(),
+                    userType:"author"
+                },'privatekey',{expiresIn: '100d'})
                 res.status(200).json({
                     message: 'login accepted',
+                    token:token,
                     user: {
                         name: loggedUser.name,
                         email: loggedUser.email,
@@ -140,8 +154,14 @@ exports.postLogin = (req, res, next) => {
                 error.statusCode = 404
                 throw error
             }
+            const token=jwt.sign({
+                email: loggedUser.email,
+                userId:loggedUser._id.toString(),
+                userType:"admin"
+            },'privatekey',{expiresIn: '100d'})
             res.status(200).json({
                 message: 'login accepted',
+                token:token,
                 user: {
                     name: loggedUser.name,
                     email: loggedUser.email,

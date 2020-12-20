@@ -1,9 +1,9 @@
-const comment = require('../models/comment')
 const Post=require('../models/post')
 const Comment=require('../models/comment')
+
 exports.getPosts=(req,res,next)=>{
     Post.find().sort({createdAt:-1}).then(posts=>{
-        console.log(posts)
+        // console.log(posts)
         res.status(200).json({
             "message":"you are in index page",
             "posts":posts
@@ -41,4 +41,28 @@ exports.getPost=(req,res,next)=>{
         }
         next(err)
     })
+}
+
+exports.addComment=(req,res,next)=>{
+    const postId= req.params.postId
+    const content =req.body.content
+
+    const comment= new Comment({
+        content :content,
+        post: postId,
+        creator:req.userId
+    })
+    comment.save().then(addedComment=>
+        res.status(201).json({
+            message:"comment added",
+            comment:addedComment
+        })
+    ).catch(err=>{
+        if (!err.statusCode) {
+            err.statusCode = 500
+        }
+        next(err)
+    })
+
+    
 }

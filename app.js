@@ -4,6 +4,7 @@ const bodyParser=require('body-parser')
 
 const postRouter=require('./routes/posts')
 const authRouter=require('./routes/auth')
+const adminRouter=require('./routes/admin')
 
 const app=express()
 
@@ -14,6 +15,7 @@ app.use(bodyParser.json())
 
 app.use(postRouter)
 app.use('/auth',authRouter)
+app.use('/admin',adminRouter)
 
 app.use((error, req, res, next) => {
     console.log(error)
