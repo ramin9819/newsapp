@@ -6,7 +6,8 @@ const isAuth=require('../middleware/isAuth')
 
 const router=express.Router()
 
-router.get('/',isAuth,postController.getPosts)
+// router.get('/',isAuth,postController.getPosts)
+router.get('/',postController.getPosts)
 
 router.get('/post/:postId',postController.getPost)
 
@@ -17,6 +18,8 @@ router.put('/edit-post/:postId',isAuth,authorController.editPost)
 router.delete('/delete-post/:postId',isAuth,authorController.deletePost)
 
 router.put('/post/add-comment/:postId',isAuth,postController.addComment)
+
+
 
 
 

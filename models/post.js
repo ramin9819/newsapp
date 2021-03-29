@@ -17,13 +17,12 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  category: {
-    type: String,
-    defult:"others"
-  },
+  category: [{
+    type: String
+}],
   creator:{
       type: mongoose.Schema.Types.ObjectId,
-      ref:'Author',
+      ref:'User',
       required:true
   }
 },{timestamps:true});

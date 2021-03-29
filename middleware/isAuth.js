@@ -13,8 +13,9 @@ module.exports=(req,res,next)=>{
         encodedUser=jsonwt.verify(token,'privatekey')
     }
     catch(err){
-        err.statusCode=500
-        throw err
+        const error= new Error('the user not authenticated')
+        error.statusCode=401
+        throw error
     }
     if (!encodedUser){
         const error= new Error('the user not authenticated')
@@ -23,6 +24,6 @@ module.exports=(req,res,next)=>{
     }
     // console.log(encodedUser)
     req.userId=encodedUser.userId
-    req.userType=encodedUser.userType
+    console.log(encodedUser)
     next()
 }

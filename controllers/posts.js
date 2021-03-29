@@ -2,8 +2,8 @@ const Post=require('../models/post')
 const Comment=require('../models/comment')
 
 exports.getPosts=(req,res,next)=>{
-    Post.find().sort({createdAt:-1}).then(posts=>{
-        // console.log(posts)
+    Post.find().sort({createdAt:-1}).populate('creator').then(posts=>{
+        console.log(posts)
         res.status(200).json({
             "message":"you are in index page",
             "posts":posts

@@ -1,8 +1,13 @@
 const bcrypt = require('bcryptjs')
 
-const Author = require('../models/author')
+// const Author = require('../models/author')
 const User = require('../models/user')
 const Post = require('../models/post')
+const Comment=require('../models/comment')
+
+exports.getIndex=(req,res,next)=>{
+    //do this later
+}
 
 exports.addAuthor = (req, res, next) => {
     const name = req.body.name
@@ -170,4 +175,26 @@ exports.editAuthor = (req, res, next) => {
         next(err)
     })
 
+}
+
+exports.deleteComment=(req,res,next)=>{
+    const commentId=req.params.commentId
+    if (req.userType !== "admin") {
+        const error = new Error('access denied')
+        error.statusCode = 400
+        throw error
+    }
+
+    Comment.findById(commentId).then(comment=>{
+        if (!comment) {
+            const error = new Error('comment not find')
+            error.statusCode = 400
+            throw error
+        }
+        return Comment.findByIdAndDelete(commentId)
+    }).then(result=>{
+        res.status(200).json({
+            message:"comment deleted"
+        })
+    })
 }
